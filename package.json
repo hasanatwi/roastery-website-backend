@@ -1,23 +1,22 @@
 {
-  "name": "backend",
+  "name": "coffee-shop-backend",
   "version": "1.0.0",
-  "main": "transitions.js",
   "type": "module",
+  "main": "transitions.js",
   "scripts": {
     "start": "node transitions.js",
     "dev": "nodemon transitions.js"
   },
   "dependencies": {
-    "express": "^5.2.1",
+    "@supabase/supabase-js": "^2.86.0",
+    "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "bcrypt": "^6.0.0",
+    "express": "^5.2.1",
     "express-session": "^1.18.2",
     "passport": "^0.7.0",
-    "passport-local": "^1.0.0",
-    "pg": "^8.16.3",
-    "@supabase/supabase-js": "^2.86.0"
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"

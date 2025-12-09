@@ -7,7 +7,7 @@ dotenv.config();
 const router = express.Router();
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   console.error("Missing Supabase environment variables");
@@ -63,3 +63,4 @@ router.get("/products/:title", async (req, res) => {
 });
 
 export default router;
+

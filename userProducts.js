@@ -7,8 +7,7 @@ dotenv.config();
 const router = express.Router();
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY; 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 router.get("/userProducts", async (req, res) => {
@@ -61,4 +60,3 @@ router.get("/userProducts", async (req, res) => {
 });
 
 export default router;
-

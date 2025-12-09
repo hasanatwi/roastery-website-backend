@@ -20,7 +20,20 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+const frontendOrigin = process.env.FRONTEND_URL.replace(/\/$/, "");
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (origin === frontendOrigin) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true
+}));
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -109,5 +122,6 @@ app.get("/debug", (req, res) => {
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 

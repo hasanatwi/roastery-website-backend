@@ -8,11 +8,6 @@ const router = express.Router();
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!supabaseUrl || !supabaseKey) {
-  console.error("Missing Supabase environment variables");
-}
-
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 function getTableName(title) {
@@ -29,7 +24,7 @@ function getTableName(title) {
 }
 
 router.get("/products/:title", async (req, res) => {
-  const { title } = req.params;
+  const title = decodeURIComponent(req.params.title);
   const tableName = getTableName(title);
 
   if (!tableName) {
@@ -63,4 +58,3 @@ router.get("/products/:title", async (req, res) => {
 });
 
 export default router;
-

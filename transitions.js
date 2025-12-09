@@ -17,7 +17,7 @@ const app = express();
 const saltRounds = 10;
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
@@ -109,3 +109,4 @@ app.get("/debug", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+

@@ -22,19 +22,27 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const frontendOrigin = process.env.FRONTEND_URL.replace(/\/$/, "");
 
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true);
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
 
-    if (origin === frontendOrigin) {
-      return callback(null, true);
-    }
+      if (origin === frontendOrigin) {
+        return callback(null, true);
+      }
 
-    return callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true
-}));
-app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -46,7 +54,10 @@ passport.use(
     { usernameField: "username", passwordField: "password" },
     async (username, password, cb) => {
       try {
-        const { data: users, error } = await supabase.from("users").select("*").eq("email", username);
+        const { data: users, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", username);
         if (error) return cb(error);
         if (!users || users.length === 0) return cb(null, false);
 
@@ -78,22 +89,38 @@ app.post("/login", (req, res, next) => {
 });
 
 app.get("/logout", (req, res, next) => {
-  req.logout(err => { if (err) return next(err); res.clearCookie("connect.sid"); res.status(200).json({ message: "Logged out" }); });
+  req.logout((err) => {
+    if (err) return next(err);
+    res.clearCookie("connect.sid");
+    res.status(200).json({ message: "Logged out" });
+  });
 });
 
 app.post("/signUp", async (req, res) => {
   const { username: email, password, nameOfTheUser } = req.body;
   try {
-    const { data: existingUsers } = await supabase.from("users").select("*").eq("email", email);
-    if (existingUsers.length > 0) return res.status(400).json({ message: "Email already exists" });
+    const { data: existingUsers } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email);
+    if (existingUsers.length > 0)
+      return res.status(400).json({ message: "Email already exists" });
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const { data: newUser, error } = await supabase.from("users").insert([{ email, password: hashedPassword, nameoftheuser: nameOfTheUser }]).select().single();
+    const { data: newUser, error } = await supabase
+      .from("users")
+      .insert([
+        { email, password: hashedPassword, nameoftheuser: nameOfTheUser },
+      ])
+      .select()
+      .single();
     if (error) return res.status(500).json({ message: "Registration failed" });
 
     req.login(newUser, (err) => {
       if (err) return res.status(500).json({ message: "Login failed" });
-      res.status(200).json({ message: "Registration successful", user: newUser });
+      res
+        .status(200)
+        .json({ message: "Registration successful", user: newUser });
     });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
@@ -115,13 +142,10 @@ app.get("/debug", (req, res) => {
       "/logout",
       "/api/products/:category",
       "/api/item/:category/:product",
-      "/api/userProducts?email=..."
-    ]
+      "/api/userProducts?email=...",
+    ],
   });
 });
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
-
